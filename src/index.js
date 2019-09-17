@@ -1,16 +1,22 @@
 const path = require('path');
+const http = require('http');
 const express = require('express');
+const socketio = require('socket.io');
 
 const app = express();
+//happens behind scenes anyway, but needed for io config
+const server = http.createServer(app)
+const io = socketio(server);
+
 const port = process.env.PORT || 3000;
 const publicDirectoryPath = path.join(__dirname, '../public')
 
 app.use(express.static(publicDirectoryPath));
 
-app.get('/', (req, res) => {
-    res.render('./index.html')
+io.on('connection', () => {
+    console.log('New websocket connection')
 })
 
-app.listen(port,() => {
+server.listen(port,() => {
     console.log('Server is up on port ' + port);
 });
